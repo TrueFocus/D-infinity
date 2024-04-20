@@ -246,7 +246,60 @@ void combinationDice(){
 }
 
 void customDice(){
-  displayValue = "CUST";
+  switch (subMenuValue){
+    case 0:
+      // Enter custom menu
+      if(currentButtonStateA == HIGH && lastButtonStateA == LOW){    
+        choiceValue = 2;
+        subMenuValue++;
+      }else{
+        displayValue = "CUST";
+      }
+      break;
+    case 1:
+      // Use left and right buttons to determine a dice choice.
+      if (currentButtonStateR == HIGH && lastButtonStateR == LOW) {        
+        choiceValue++;
+        choiceValue = choiceValue >= 101 ? 2 : choiceValue;
+      } else if(currentButtonStateL == HIGH && lastButtonStateL == LOW){
+        choiceValue--;
+        choiceValue = choiceValue < 2 ? 100 : choiceValue;
+      }
+
+      diceValue = choiceValue;
+
+      // Choose die and display properties based on the choice value
+      if(choiceValue<10){
+        leadingZeroes = "  d";
+        displayValue = leadingZeroes + choiceValue;
+      }else if(choiceValue<100){
+        leadingZeroes = " d";
+        displayValue = leadingZeroes + choiceValue;
+      }else if(choiceValue<=1000){
+        leadingZeroes = "d";
+        displayValue = leadingZeroes + choiceValue;
+      }else{
+        displayValue = String(choiceValue);
+      }
+
+      // Go to result menu and determine what to display there.
+      if (currentButtonStateA == HIGH && lastButtonStateA == LOW && inResultMenu == false) {        
+          inResultMenu = true;
+          diceResult = random(1, diceValue+1);
+          if(diceResult<10){
+            leadingZeroes = "   ";
+            result = leadingZeroes + diceResult;
+          }else if(diceResult<100){
+            leadingZeroes = "  ";
+            result = leadingZeroes + diceResult;
+          }else if(diceResult<=1000){
+            leadingZeroes = " ";
+            result = leadingZeroes + diceResult;
+          }else{
+            result = String(diceResult);
+          }
+      }
+  }
 }
 
 void chooseDie(){
