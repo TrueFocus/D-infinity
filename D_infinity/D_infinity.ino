@@ -240,6 +240,7 @@ void combinationDice(){
           Serial.println(diceResult);
         }
         subMenuValue = 1;
+        choiceValue = 0;
       }
       break;
   }
