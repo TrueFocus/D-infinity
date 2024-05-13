@@ -1,6 +1,12 @@
 #include  <Wire.h>
 #include  <LiquidCrystal_I2C.h>
 
+#define DICEMENUSINGLE 0
+#define DICEMENUCOMBINATION 1
+#define DICEMENUCUSTOM 2
+
+String formatNumberForLCD(int iNumberToConvert);
+
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 // Variables determining pins connected to the different buttons
@@ -86,13 +92,13 @@ void loop()
     }
   }else{
     switch (menuValue) {
-    case 0:
+    case DICEMENUSINGLE:
       singleDie();
       break;
-    case 1:
+    case DICEMENUCOMBINATION:
       combinationDice();
       break;  
-    case 2:
+    case DICEMENUCUSTOM:
       customDice();
       break;
     }
@@ -107,7 +113,7 @@ void loop()
   lcd.print("M");
   lcd.setCursor(1,1);
   lcd.print(menuValue);
-  lcd.setCursor(13,1);
+  lcd.setCursor(13,1); 
   lcd.print("SM");
   lcd.setCursor(15,1);
   lcd.print(subMenuValue);
@@ -143,20 +149,21 @@ void singleDie(){
 
   // Go to result menu and determine what to display there.
   if (currentButtonStateA == HIGH && lastButtonStateA == LOW && inResultMenu == false) {        
-      inResultMenu = true;
-      diceResult = random(1, diceValue+1);
-      if(diceResult<10){
-        leadingZeroes = "   ";
-        result = leadingZeroes + diceResult;
-      }else if(diceResult<100){
-        leadingZeroes = "  ";
-        result = leadingZeroes + diceResult;
-      }else if(diceResult<=1000){
-        leadingZeroes = " ";
-        result = leadingZeroes + diceResult;
-      }else{
-        result = String(diceResult);
-      }
+       inResultMenu = true;
+       diceResult = random(1, diceValue+1);
+       result = formatNumberForLCD(diceResult);
+  //     if(diceResult<10){
+  //       leadingZeroes = "   ";
+  //       result = leadingZeroes + diceResult;
+  //     }else if(diceResult<100){
+  //       leadingZeroes = "  ";
+  //       result = leadingZeroes + diceResult;
+  //     }else if(diceResult<=1000){
+  //       leadingZeroes = " ";
+  //       result = leadingZeroes + diceResult;
+  //     }else{
+  //       result = String(diceResult);
+  //     }
   }
 }
 
@@ -339,4 +346,11 @@ void chooseDie(){
         diceValue = 100; 
         break;
     }
+}
+
+String formatNumberForLCD(int iNumberToConvert)
+{
+  char StringToReturn[4] = {" "};
+  snprintf(StringToReturn, 5, "% 4d", iNumberToConvert);
+  return StringToReturn;
 }
